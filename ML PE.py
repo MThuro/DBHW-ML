@@ -13,11 +13,21 @@ from sklearn.model_selection import train_test_split
 
 from random import random
 
+tf.enable_eager_execution() 
+
 # Read data from csv file
 dataframe = pd.read_csv("../data_u_1_3001879_5279494.csv",sep=';')
 # Convert column "Einordnung" into a discrete numerical value
 dataframe['Einordnung'] = pd.Categorical(dataframe['Einordnung'])
 dataframe['Einordnung'] = dataframe.Einordnung.cat.codes
+
+# Convert column "Geschlecht" into a discrete numerical value
+dataframe['Geschlecht'] = pd.Categorical(dataframe['Geschlecht'])
+dataframe['Geschlecht'] = dataframe.Geschlecht.cat.codes
+
+# Convert column "Betaetigung" into a discrete numerical value
+dataframe['Betaetigung'] = pd.Categorical(dataframe['Betaetigung'])
+dataframe['Betaetigung'] = dataframe.Betaetigung.cat.codes
 
 # Split data into train, test and validation examples
 train, test = train_test_split(dataframe, test_size=0.2)
@@ -40,27 +50,24 @@ test_ds = df_to_dataset(test, shuffle=False)
 feature_columns = []
 
 # Numeric columns
-for header in ['Geschlecht', 'Groesse', 'Alter']:
+for header in ['Geschlecht', 'Groesse', 'Alter', 'Betaetigung']:
   feature_columns.append(tf.feature_column.numeric_column(header))
 
-# Indicator columns
-geschlecht = tf.feature_column.categorical_column_with_vocabulary_list(
-      'Geschlecht', ['m', 'w'])
-geschlecht_one_hot = tf.feature_column.indicator_column(geschlecht)
-feature_columns.append(geschlecht_one_hot)
-
-betaetigung = tf.feature_column.categorical_column_with_vocabulary_list(
-      'Betaetigung', ['keinSport', 'Kraftsport', 'Ausdauersport'])
-betaetigung_one_hot = tf.feature_column.indicator_column(betaetigung)
-feature_columns.append(betaetigung_one_hot)
 
 feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
-"""
+
 model = tf.keras.Sequential([
   feature_layer,
-  tf.compat.v1.layers.Dense(128, activation='relu'),
-  tf.compat.v1.layers.Dense(128, activation='relu'),
-  tf.compat.v1.layers.Dense(1, activation='sigmoid')
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(128, activation='relu'),  
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(128, activation='relu'),          
+  tf.keras.layers.Dense(1, activation='sigmoid')
 ])
 
 model.compile(optimizer='adam',
@@ -71,4 +78,3 @@ model.compile(optimizer='adam',
 model.fit(train_ds,
           validation_data=val_ds,
           epochs=5)
-"""
