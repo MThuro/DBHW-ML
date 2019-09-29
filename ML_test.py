@@ -12,7 +12,7 @@ from sklearn.metrics import confusion_matrix
 
 from random import random
 
-#tf.enable_eager_execution() 
+tf.enable_eager_execution() 
 
 # Read data from csv file
 dataframe = pd.read_csv("C:/Users/muellersm/Desktop/data_u_1_3001879_5279494.csv",sep=';')
@@ -48,19 +48,16 @@ test_ds = df_to_dataset(test, shuffle=False)
 
 feature_columns = []
 
-# Numeric columns
+# Add numeric columns to feature columns array
 for header in ['Geschlecht', 'Groesse', 'Alter', 'Betaetigung']:
   feature_columns.append(tf.feature_column.numeric_column(header))
 
-
+# Create feature layer
 feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
 
 model = tf.keras.Sequential([
   feature_layer,
-  tf.keras.layers.Dense(5, activation='relu'),
-  tf.keras.layers.Dense(128, activation='relu'),  
-  tf.keras.layers.Dense(128, activation='relu'),
-  tf.keras.layers.Dense(128, activation='relu'),        
+  tf.keras.layers.Dense(13, activation='relu'),        
   tf.keras.layers.Dense(3, activation='softmax')
 ])
 
@@ -72,4 +69,6 @@ model.compile(optimizer='adam',
 model.fit(train_ds,
           validation_data=val_ds,
           epochs=5)
+
+model.evaluate(test_ds)
 
