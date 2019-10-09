@@ -8,6 +8,7 @@
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+import time
 from tensorflow import keras
 from tensorflow import feature_column
 from sklearn.model_selection import train_test_split
@@ -104,11 +105,14 @@ def predict(model: tf.keras.Sequential):
   predictions = model.predict(test_ds)    
 
   # print results
-  df = pd.DataFrame(predictions, columns=["Normalgewicht", "Übergewicht", "Untergewicht"])
-  df['Normalgewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in df['Normalgewicht']], index = df.index)
-  df['Übergewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in df['Übergewicht']], index = df.index)
-  df['Untergewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in df['Untergewicht']], index = df.index)
-  print(df)      
+  result = pd.DataFrame(predictions, columns=["Normalgewicht", "Uebergewicht", "Untergewicht"])
+  result['Normalgewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in result['Normalgewicht']], index = result.index)
+  result['Übergewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in result['Übergewicht']], index = result.index)
+  result['Untergewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in result['Untergewicht']], index = result.index)
+
+  # save to csv
+  file_name = "./predictions" + time.strftime("%d%m%Y%H%M%S") + ".csv"
+  result.to_csv(file_name, sep=';', encoding='utf-8')     
       
 #execute training
 test_accuracy, model = train_model()
