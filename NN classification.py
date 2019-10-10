@@ -37,7 +37,7 @@ def df_to_dataset(dataframe, shuffle=True, batch_size=78):
   ds = ds.batch(batch_size)
   return ds
 
-def create_feature_layer() -> tf.keras.layers.DenseFeatures:
+def create_feature_layer() -> keras.layers.DenseFeatures:
   # feature column for height
   feature_height = feature_column.numeric_column("Groesse")
 
@@ -105,7 +105,7 @@ def predict(model: tf.keras.Sequential):
   predictions = model.predict(test_ds)    
 
   # print results
-  result = pd.DataFrame(predictions, columns=["Normalgewicht", "Uebergewicht", "Untergewicht"])
+  result = pd.DataFrame(predictions, columns=["Normalgewicht", "Übergewicht", "Untergewicht"])
   result['Normalgewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in result['Normalgewicht']], index = result.index)
   result['Übergewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in result['Übergewicht']], index = result.index)
   result['Untergewicht'] = pd.Series(["{0:.2f}%".format(val * 100) for val in result['Untergewicht']], index = result.index)
@@ -113,6 +113,7 @@ def predict(model: tf.keras.Sequential):
   # save to csv
   file_name = "./predictions" + time.strftime("%d%m%Y%H%M%S") + ".csv"
   result.to_csv(file_name, sep=';', encoding='utf-8')     
+  print("File has been saved under", file_name)
       
 #execute training
 test_accuracy, model = train_model()
