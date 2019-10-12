@@ -35,7 +35,7 @@ train, test = train_test_split(dataframe, test_size=0.2)
 train, val = train_test_split(train, test_size=0.2)
 
 # Create a tf.data dataset from the dataframe
-def df_to_dataset(dataframe, shuffle=True, batch_size=78):
+def df_to_dataset(dataframe, shuffle=True, batch_size=80):
   dataframe = dataframe.copy()
   labels = dataframe.pop('Einordnung')
   ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
